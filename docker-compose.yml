@@ -1,0 +1,43 @@
+services:
+  mysql:
+    image: mysql:8.0.36
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init-sql:/docker-entrypoint-initdb.d
+
+  mysql-exporter:
+    image: prom/mysqld-exporter:v0.14.0
+    container_name: mysql-exporter
+    environment:
+      DATA_SOURCE_NAME: "root:root@(mysql:3306)/"
+    ports:
+      - "9104:9104"
+    depends_on:
+      - mysql
+    command:
+      - "--collect.info_schema.innodb_metrics"
+
+  prometheus:
+    image: prom/prometheus:v3.2.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - mysql-exporter
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    ports:
+      - "3000:3000"
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: true
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
