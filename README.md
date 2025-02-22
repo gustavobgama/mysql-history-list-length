@@ -17,6 +17,6 @@ Após aguardar alguns segundos para que todos os containers estejam prontos, ace
 Depois basta executar o script de teste com os diferentes níveis de isolamento e conferir o comportamento da métrica no gráfico.
 
 ```bash
-$ ./hhl-test.sh "READ COMMITTED"
-$ ./hhl-test.sh "REPEATABLE READ"
+$ ./hll-test.sh "READ COMMITTED"
+$ ./hll-test.sh "REPEATABLE READ"
 ```
