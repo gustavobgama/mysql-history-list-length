@@ -6,6 +6,10 @@ services:
       MYSQL_DATABASE: mydb
     ports:
       - "3306:3306"
+    command:
+      - "mysqld"
+      - "--innodb_purge_batch_size=10"
+      - "--innodb_purge_rseg_truncate_frequency=32"
     volumes:
       - ./init-sql:/docker-entrypoint-initdb.d
 
